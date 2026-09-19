@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counting Down For You ❤️</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a0b2e, #4c1c5c, #0d0714);
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            text-align: center;
+        }
+        /* Entrance Screen to bypass browser audio block */
+        #entrance-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #11071c;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease;
+        }
+        .reveal-btn {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            border: none;
+            padding: 15px 40px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 65, 108, 0.5);
+            transition: transform 0.2s;
+        }
+        .reveal-btn:hover {
+            transform: scale(1.05);
+        }
+        /* Main Layout */
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            z-index: 10;
+        }
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            color: #ffd166;
+        }
+        /* Countdown Box Styling */
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .time-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 12px;
+            min-width: 80px;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .time-box span {
+            display: block;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff477e;
+        }
+        .time-box label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ddd;
+        }
+        /* Message Box Styling */
+        .message-box {
+            height: 80px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .message {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: #f4f1de;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            position: absolute;
+            max-width: 500px;
+            line-height: 1.5;
+        }
+        .message.active {
+            opacity: 1;
+        }
+        /* Music Control Controls */
+        .audio-controls {
+            margin-top: 40px;
+        }
+        .music-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Overlay screen to unlock audio -->
+    <div id="entrance-screen">
+        <h2 style="margin-bottom: 20px; color: #ff477e;">A Special Countdown For Someone Special...</h2>
+        <button class="reveal-btn" onclick="startExperience()">Open Your Surprise ✨</button>
+    </div>
+
+    <!-- Main site contents -->
+    <div class="container">
+        <h1>Counting down to my special day... ⏳</h1>
+        
+        <div class="countdown-container">
+            <div class="time-box">
+                <span id="days">00</span>
+                <label>Days</label>
+            </div>
+            <div class="time-box">
+                <span id="hours">00</span>
+                <label>Hrs</label>
+            </div>
+            <div class="time-box">
+                <span id="minutes">00</span>
+                <label>Mins</label>
+            </div>
+            <div class="time-box">
+                <span id="seconds">00</span>
+                <label>Secs</label>
+            </div>
+        </div>
+
+        <!-- Rotating sweet messages -->
+        <div class="message-box">
+    <div class="message active">Mammu i'll wait until you come, even if it takes another birth. </div>
+    <div class="message">Mammu you have been my world, and you will be my world. You are always in my thoughts, forever. </div>
+    <div class="message">Pichi you are my wife, no one can ever replace you.</div>
+    <div class="message">Pichi you are my only wife, where I see you with divine. </div>
+      </div>
+
+        <div class="audio-controls">
+            <button class="music-btn" id="mute-btn" onclick="toggleMusic()">🎵 Pause Music</button>
+        </div>
+    </div>
+
+    <!-- Background Song Configuration -->
+    <!-- Swap the URL inside src with your own direct audio link if preferred -->
+    <audio id="bg-music" loop>
+        <source src="Pichi.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // --- 1. Audio and Entrance Logic ---
+        const music = document.getElementById('bg-music');
+        
+        function startExperience() {
+            document.getElementById('entrance-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('entrance-screen').style.display = 'none';
+            }, 1000);
+            
+            // Start the audio stream
+            music.play().catch(error => console.log("Audio play blocked: ", error));
+        }
+
+        function toggleMusic() {
+            const btn = document.getElementById('mute-btn');
+            if (music.paused) {
+                music.play();
+                btn.innerText = "🎵 Pause Music";
+            } else {
+                music.pause();
+                btn.innerText = "🔇 Play Music";
+            }
+        }
+
+        // --- 2. Live Countdown Logic (Targets Oct 1 of current year) ---
+        const currentYear = new Date().getFullYear();
+        const targetDate = new Date(`October 1, ${currentYear} 00:00:00`).getTime();
+
+        const timerInterval = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                clearInterval(timerInterval);
+                document.querySelector('h1').innerText = "🎉 HAPPY BIRTHDAY!!! 🎉";
+                document.querySelector('.countdown-container').style.display = 'none';
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = String(days).padStart(2, '0');
+            document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+        }, 1000);
+
+        // --- 3. Message Slideshow Logic ---
+        const messages = document.querySelectorAll('.message');
+        let currentMessageIndex = 0;
+
+        setInterval(() => {
+            messages[currentMessageIndex].classList.remove('active');
+            currentMessageIndex = (currentMessageIndex + 1) % messages.length;
+            messages[currentMessageIndex].classList.add('active');
+        }, 4000); // Transitions messages every 4 seconds
+    </script>
+</body>
+</html>
